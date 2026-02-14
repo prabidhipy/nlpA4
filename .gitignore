@@ -1,2 +1,3 @@
 __pycache__/
-ber_from_scratch/
+bert_from_scratch/
+app/sbert_model.pth
