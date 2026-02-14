@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>S-BERT NLI Checker</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 450px; }
+        h2 { color: #333; text-align: center; }
+        .input-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #555; }
+        input { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 0.75rem; background-color: #5c67f2; color: white; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #4a54e1; }
+        #result-container { margin-top: 1.5rem; text-align: center; display: none; }
+        #result { font-size: 1.25rem; font-weight: bold; color: #5c67f2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>NLI Predictor</h2>
+        <div class="input-group">
+            <label>Premise</label>
+            <input type="text" id="premise" placeholder="A man is playing a guitar on stage.">
+        </div>
+        <div class="input-group">
+            <label>Hypothesis</label>
+            <input type="text" id="hypothesis" placeholder="The man is performing music.">
+        </div>
+        <button onclick="runInference()">Predict Relationship</button>
+
+        <div id="result-container">
+            <p>Resulting Label:</p>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function runInference() {
+            const premise = document.getElementById('premise').value;
+            const hypothesis = document.getElementById('hypothesis').value;
+            const resBox = document.getElementById('result-container');
+            const resText = document.getElementById('result');
+
+            if (!premise || !hypothesis) return alert("Please fill both boxes");
+
+            resText.innerText = "Thinking...";
+            resBox.style.display = "block";
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ premise, hypothesis })
+            });
+            const data = await response.json();
+            resText.innerText = data.result;
+        }
+    </script>
+</body>
+</html>
